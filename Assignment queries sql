@@ -1,0 +1,53 @@
+-- Task 1: User-defined function
+DELIMITER //
+CREATE FUNCTION StuffChicken(foodType VARCHAR(100))
+RETURNS VARCHAR(100)
+DETERMINISTIC
+BEGIN
+    DECLARE result VARCHAR(100);
+    SET result = REPLACE(foodType, 'Quick Bite', 'Quick Chicken Bite');
+    RETURN result;
+END //
+DELIMITER ;
+
+-- Task 2: Restaurant with highest rating
+SELECT 
+    RestaurantName,
+    CuisineType,
+    StuffChicken(RestaurantType) AS UpdatedType,
+    Rating
+FROM jomato
+ORDER BY Rating DESC
+LIMIT 1;
+
+-- Task 3: Rating Status column
+SELECT 
+    RestaurantName,
+    Rating,
+    CASE 
+        WHEN Rating > 4 THEN 'Excellent'
+        WHEN Rating > 3.5 THEN 'Good'
+        WHEN Rating > 3 THEN 'Average'
+        ELSE 'Bad'
+    END AS RatingStatus
+FROM jomato;
+
+-- Task 4: Ceil, Floor, Absolute + Date
+SELECT 
+    RestaurantName,
+    Rating,
+    CEIL(Rating) AS CeilValue,
+    FLOOR(Rating) AS FloorValue,
+    ABS(Rating) AS AbsoluteValue,
+    CURRENT_DATE() AS CurrentDate,
+    YEAR(CURRENT_DATE()) AS Year,
+    MONTHNAME(CURRENT_DATE()) AS MonthName,
+    DAY(CURRENT_DATE()) AS Day
+FROM jomato;
+
+-- Task 5: Rollup on Restaurant Type
+SELECT 
+    RestaurantType,
+    SUM(AverageCost) AS TotalAverageCost
+FROM jomato
+GROUP BY RestaurantType WITH ROLLUP;
